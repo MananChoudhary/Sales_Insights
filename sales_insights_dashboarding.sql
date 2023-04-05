@@ -6,12 +6,13 @@ with max_sales as (select d.year,d.month_name,sum(sales_amount) as Total_revenue
 from transactions t join date d on d.cy_date=t.order_date group by d.year,d.month_name)
 
 select * from (select *,rank() over (partition by year  order by Total_revenue desc) as Ranking from
-max_sales)tp where tp.Ranking=1
- ;
+max_sales)tp where tp.Ranking=1;
 
-/*
-What are the Total Sales across each year
-*/
+
+
+
+-- What are the Total Sales across each year
+
 
 SELECT 
     d.year, SUM(t.sales_amount) AS Total_sales_per_year
@@ -22,9 +23,9 @@ FROM
 
 GROUP BY d.year;
 
-/*
-What are the profit margin in each year for diffrent market zones
-*/
+
+-- What are the profit margin in each year for diffrent market zones
+
 SELECT 
     m.zone,d.year,concat("Rs ",round(AVG(t.profit_margin),2)) AS profit_margin,rank() over (partition by year order by profit_margin desc) as ranking
 FROM
@@ -34,9 +35,9 @@ FROM
     left join date d on d.date=t.order_date
 GROUP BY m.zone,d.year;
 
-/*
-Which customer brings highest sales to the bussiness within each market(city)
-*/
+
+-- Which customer brings highest sales to the bussiness within each market(city)
+
 SELECT 
     m.markets_name,cc.custmer_name, max(t.sales_amount) as Max_sales
 FROM
@@ -45,21 +46,26 @@ FROM
     transactions t ON t.customer_code = cc.customer_code
     inner join markets m on m.markets_code= t.market_code
     group by m.markets_name order by m.markets_name;
+    
 
 -- Which zone has maximum profit margin percentage in market based on first three top market names.
+
 use sales;
 with pr_rank as (select zone,markets_name,concat(t.profit_margin_percentage*100,"%")  as profit_margin_percentage ,
 rank() over (partition by zone order by profit_margin_percentage desc) as rank_profit from markets m 
 join transactions t on t.market_code=m.markets_code group by markets_name)
 Select * from pr_rank where rank_profit in (1,2,3);
 
+
 -- Which stores has brought the more than 50% revenue withn each financial year
+
 with max_avg_revenue as (select c.custmer_name, round(avg(t.sales_amount),2) as Avg_revenue,year(t.order_date) as Year
 from transactions t join customers c on t.customer_code= c.customer_code group by c.custmer_name)
 select * from 
 (select *,concat(round(percent_rank() over (partition by Year 
 order by Avg_revenue )*100,2),"%")  as Percentile_rank  from max_avg_revenue) mar
 where mar.Percentile_rank>50;
+
 
 -- Least profitable products
 
@@ -106,6 +112,7 @@ as Max_avg_profit_margin, max(Avg_sales) as Max_avg_sales from
 group by s.zone;
 
 /*
+Insight:
 So maximum avg_profit percentage is coming from "Central" zone with 2.5% but north zone gas maximum profit margin.
 */
 

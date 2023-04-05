@@ -1,6 +1,14 @@
-# Sales_Insights
+# Exploratory data analysis using SQL
 
-This project contains the insights of the sales data containing multiple tables. The description of the data tables are as follows:-
+This project contains the insights of the sales data containing multiple tables. The exploration of data is performed using multiple functionalities of sql comprising of -
+1. Windows Functions
+2. CTE
+3. Aggregation functions
+4. Joins
+5. Subqueries
+
+There are 5 tables used for this project
+The description of the data tables are as follows:-
 
 ## 1. Customer's table
 
